@@ -1,9 +1,10 @@
-#include <SDL.h>            
+#include <SDL.h>
 
 #include "simple_logger.h"
 #include "gfc_input.h"
 #include "gfc_vector.h"
 #include "gfc_matrix.h"
+#include "gfc_audio.h"
 
 #include "gf3d_vgraphics.h"
 #include "gf3d_pipeline.h"
@@ -23,6 +24,7 @@
 #include "world.h"
 #include "weapon.h"
 #include "resource.h"
+#include "enemy.h"
 
 //#include "player.c"
 
@@ -49,6 +51,7 @@ int main(int argc,char *argv[])
     Entity *metalBarrel;
     Entity *jerryCan;
     Entity *waterWell;
+    Entity *zombie;
     //Entity *gun;
     //Particle particle[100];
     Matrix4 skyMat;
@@ -62,6 +65,7 @@ int main(int argc,char *argv[])
         }
     }
     
+    gfc_audio_init(128,32,0,32,1,1);
     init_logger("gf3d.log",0);    
     gfc_input_init("config/input.cfg");
     slog("gf3d begin");
@@ -76,23 +80,30 @@ int main(int argc,char *argv[])
     mouse = gf2d_sprite_load("images/pointer.png",32,32, 16);
     
 
-    agu = agumon_new(vector3d(0,0,50));
-    if (agu)agu->selected = 1;
+
     w = world_load("config/testworld.json");
+
+    agu = gfc_list_get_nth(w->entityList,2);
+    if (agu)agu->selected = 1;
     
     SDL_SetRelativeMouseMode(SDL_TRUE);
     slog_sync();
     gf3d_camera_set_scale(vector3d(1,1,1));
-    player = player_new(vector3d(-50,0,0));
-    weapon = weapon_new();
-    woodLog = resource_new(vector3d(100,0,0), "models/log.model", "log");
-    cementBlock = resource_new(vector3d(125,0,0), "models/cement.model", "concrete");
-    metalBarrel = resource_new(vector3d(150,0,0), "models/metal.model", "metal");
+
+    player = gfc_list_get_nth(w->entityList, 0);
+    weapon = gfc_list_get_nth(w->entityList, 1);
+    woodLog = gfc_list_get_nth(w->entityList, 3);
+    cementBlock = gfc_list_get_nth(w->entityList, 4);
+    metalBarrel = gfc_list_get_nth(w->entityList, 5);
     metalBarrel->scale = vector3d(1,1,1);
-    jerryCan = resource_new(vector3d(175,0,0), "models/fuel.model", "fuel");
+    jerryCan = gfc_list_get_nth(w->entityList, 6);
     jerryCan->scale = vector3d(5,5,5);
-    waterWell = resource_new(vector3d(200,0,0), "models/water.model", "water");
+    waterWell = gfc_list_get_nth(w->entityList, 7);
     waterWell->scale = vector3d(1,1,1);
+    zombie = gfc_list_get_nth(w->entityList, 8);
+
+    //slog("RAHHHHHHHHHHHHHHHHHHHHHHHHH: %s", woodLog->entityName);
+
 
     //test_string = sj_string_new_text("test: ", 0);
 
@@ -111,6 +122,10 @@ int main(int argc,char *argv[])
     gfc_matrix_identity(skyMat);
     gfc_matrix_scale(skyMat,vector3d(100,100,100));
     
+
+    Mix_PlayMusic(gfc_sound_load_music("music/wind.wav"), -1);
+    Mix_Volume(0, 128);
+
     // main game loop
     slog("gf3d main loop begin");
     while(!done)
@@ -132,10 +147,10 @@ int main(int argc,char *argv[])
         //slog("calefaction check: %f", workPlease.calefaction);
 
         gfc_block_sprintf(playerStatuses
-        ,"Calefaction: %f | Hydration: %i | Saturation: %i | Sanityation: %i | Defication: %i"
+        ,"Calefaction: %f | Hydration: %i | Satiation: %i | Sanityation: %i | Defication: %i"
         ,player->calefaction
         ,player->hydration
-        ,player->saturation
+        ,player->satiation
         ,player->sanityation
         ,player->defication);
 
@@ -149,28 +164,45 @@ int main(int argc,char *argv[])
 
 
         collisionPartner = entity_get_collision_partner(player);
-        if (collisionPartner != NULL) {
-            if(collisionPartner->isEnemy == 1){
+        if (collisionPartner != NULL)
+        {
+            slog("Collision Partner Name: %s", collisionPartner->entityName);
+            if(collisionPartner->isEnemy == 1)
+            {
+                SDL_Delay(1);
                 player->sanityation -= 1;
-            }else if(collisionPartner->isResource == 1){
-                if(gfc_stricmp(collisionPartner->entityName, "log") == 0){
+            }
+            else if(collisionPartner->isResource == 1)
+            {
+                if(gfc_stricmp(collisionPartner->entityName, "log") == 0)
+                {
                     player->wood++;
                     entity_free(woodLog);
-                }else if(gfc_stricmp(collisionPartner->entityName, "concrete") == 0){
+                }
+                else if(gfc_stricmp(collisionPartner->entityName, "concrete") == 0)
+                {
                     player->concrete++;
                     entity_free(cementBlock);
-                }else if(gfc_stricmp(collisionPartner->entityName, "metal") == 0){
+                }
+                else if(gfc_stricmp(collisionPartner->entityName, "metal") == 0)
+                {
                     player->metal++;
                     entity_free(metalBarrel);
-                }else if(gfc_stricmp(collisionPartner->entityName, "fuel") == 0){
+                }
+                else if(gfc_stricmp(collisionPartner->entityName, "fuel") == 0)
+                {
                     player->fuel += 10;
                     entity_free(jerryCan);
-                }else if(gfc_stricmp(collisionPartner->entityName, "water") == 0){
+                }
+                else if(gfc_stricmp(collisionPartner->entityName, "water") == 0)
+                {
                     player->water += 25;
                     entity_free(waterWell);
                 }
             }
-        } else {
+        }
+        else
+        {
             if(player->sanityation < 100)
             {
                 player->sanityation +=1;
@@ -215,5 +247,4 @@ int main(int argc,char *argv[])
     slog_sync();
     return 0;
 }
-
 /*eol@eof*/

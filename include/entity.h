@@ -26,7 +26,8 @@ typedef struct Entity_S
     Uint8       selected;
     Color       selectedColor;      /**<Color for highlighting*/
     
-    Sphere      bounds; // for collisions
+    Sphere      bounds;// for collisions
+    Sphere      targetRadius;
     int         team;  //same team dont clip
     int         clips;  // if false, skip collisions
 
@@ -56,8 +57,9 @@ typedef struct Entity_S
     Uint8   isWeapon;
     Uint8   isEnemy;
     Uint8   isResource;
+
     int hydration;
-    int saturation;
+    int satiation;
     int defication;
     int sanityation;
     int wood;
