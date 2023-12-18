@@ -15,12 +15,6 @@
 
     },
 
-    "wep1":
-    {
-        "model":"models/ak47.model",
-        "entityName":"AK"
-    },
-
     "agumon":
     {
         "model":"models/dino.model",

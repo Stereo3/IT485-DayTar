@@ -1,9 +1,13 @@
 #include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_mixer.h>
+#include <stdio.h>
 
 #include "simple_logger.h"
 #include "gfc_input.h"
 #include "gfc_vector.h"
 #include "gfc_matrix.h"
+
 #include "gfc_audio.h"
 
 #include "gf3d_vgraphics.h"
@@ -44,18 +48,17 @@ int main(int argc,char *argv[])
     World *w;
     Entity *agu;
     Entity *player;
-    Entity *collisionPartner;
     Entity *weapon;
-    Entity *woodLog;
-    Entity *cementBlock;
-    Entity *metalBarrel;
-    Entity *jerryCan;
-    Entity *waterWell;
     Entity *zombie;
+    Mix_Music *ambiance;
     //Entity *gun;
     //Particle particle[100];
     Matrix4 skyMat;
     Model *sky;
+    Uint8 mainMenuBool = 1;
+    Sprite *mainMenuImg;
+    const Uint8 * keys;
+    keys = SDL_GetKeyboardState(NULL);
 
     for (a = 1; a < argc;a++)
     {
@@ -65,7 +68,7 @@ int main(int argc,char *argv[])
         }
     }
     
-    gfc_audio_init(128,32,0,32,1,1);
+    gfc_audio_init(128,32,0,32,1,0);
     init_logger("gf3d.log",0);    
     gfc_input_init("config/input.cfg");
     slog("gf3d begin");
@@ -77,9 +80,8 @@ int main(int argc,char *argv[])
     
     entity_system_init(1024);
     
-    mouse = gf2d_sprite_load("images/pointer.png",32,32, 16);
-    
-
+    //mouse = gf2d_sprite_load("images/pointer.png",32,32, 16);
+    mainMenuImg = gf2d_sprite_load_image("images/mainmenu.png");
 
     w = world_load("config/testworld.json");
 
@@ -92,14 +94,14 @@ int main(int argc,char *argv[])
 
     player = gfc_list_get_nth(w->entityList, 0);
     weapon = gfc_list_get_nth(w->entityList, 1);
-    woodLog = gfc_list_get_nth(w->entityList, 3);
-    cementBlock = gfc_list_get_nth(w->entityList, 4);
-    metalBarrel = gfc_list_get_nth(w->entityList, 5);
-    metalBarrel->scale = vector3d(1,1,1);
-    jerryCan = gfc_list_get_nth(w->entityList, 6);
-    jerryCan->scale = vector3d(5,5,5);
-    waterWell = gfc_list_get_nth(w->entityList, 7);
-    waterWell->scale = vector3d(1,1,1);
+    // woodLog = gfc_list_get_nth(w->entityList, 3);
+    // cementBlock = gfc_list_get_nth(w->entityList, 4);
+    // metalBarrel = gfc_list_get_nth(w->entityList, 5);
+    // metalBarrel->scale = vector3d(1,1,1);
+    // jerryCan = gfc_list_get_nth(w->entityList, 6);
+    // jerryCan->scale = vector3d(5,5,5);
+    // waterWell = gfc_list_get_nth(w->entityList, 7);
+    // waterWell->scale = vector3d(1,1,1);
     zombie = gfc_list_get_nth(w->entityList, 8);
 
     //slog("RAHHHHHHHHHHHHHHHHHHHHHHHHH: %s", woodLog->entityName);
@@ -122,9 +124,21 @@ int main(int argc,char *argv[])
     gfc_matrix_identity(skyMat);
     gfc_matrix_scale(skyMat,vector3d(100,100,100));
     
+    ambiance = gfc_sound_load_music("music/wind.mp3");
 
-    Mix_PlayMusic(gfc_sound_load_music("music/wind.wav"), -1);
-    Mix_Volume(0, 128);
+    //ambiance = Mix_LoadMUS("music/wind.mp3");
+
+    if(!ambiance)
+    {
+        slog("AMBIANCE IS NULL RAHHHHHHHHH \n");
+        return NULL;
+    }
+
+    Mix_PlayMusic(ambiance, -1);
+    Mix_VolumeMusic(32);
+
+
+
 
     // main game loop
     slog("gf3d main loop begin");
@@ -137,8 +151,6 @@ int main(int argc,char *argv[])
         mouseFrame += 0.01;
         if (mouseFrame >= 16)mouseFrame = 0;
         world_run_updates(w);
-        entity_think_all();
-        entity_update_all();
         gf3d_camera_update_view();
         gf3d_camera_get_view_mat4(gf3d_vgraphics_get_view_matrix());
 
@@ -162,86 +174,62 @@ int main(int argc,char *argv[])
         ,player->fuel
         ,player->water);
 
+        //slog("Volume: %i", Mix_VolumeMusic(-1));
 
-        collisionPartner = entity_get_collision_partner(player);
-        if (collisionPartner != NULL)
+        gf3d_vgraphics_render_start();
+
+        if(mainMenuBool == 1)
         {
-            slog("Collision Partner Name: %s", collisionPartner->entityName);
-            if(collisionPartner->isEnemy == 1)
+            if(!mainMenuImg)
             {
-                SDL_Delay(1);
-                player->sanityation -= 1;
+                slog("No Image for you!");
+                return NULL;
             }
-            else if(collisionPartner->isResource == 1)
+            gf3d_model_draw_sky(sky,skyMat,gfc_color(1,1,1,1));
+            gf2d_sprite_draw(mainMenuImg,vector2d(500,100),vector2d(2,2),vector3d(0,0,0),gfc_color(1,1,1,1),0);
+            if (keys[SDL_SCANCODE_3])
             {
-                if(gfc_stricmp(collisionPartner->entityName, "log") == 0)
-                {
-                    player->wood++;
-                    entity_free(woodLog);
-                }
-                else if(gfc_stricmp(collisionPartner->entityName, "concrete") == 0)
-                {
-                    player->concrete++;
-                    entity_free(cementBlock);
-                }
-                else if(gfc_stricmp(collisionPartner->entityName, "metal") == 0)
-                {
-                    player->metal++;
-                    entity_free(metalBarrel);
-                }
-                else if(gfc_stricmp(collisionPartner->entityName, "fuel") == 0)
-                {
-                    player->fuel += 10;
-                    entity_free(jerryCan);
-                }
-                else if(gfc_stricmp(collisionPartner->entityName, "water") == 0)
-                {
-                    player->water += 25;
-                    entity_free(waterWell);
-                }
+                done = 1;
+            }
+            else if(keys[SDL_SCANCODE_1])
+            {
+                mainMenuBool = 0;
             }
         }
         else
         {
-            if(player->sanityation < 100)
+            entity_think_all();
+            entity_update_all();
+            world_draw(w);
+            entity_draw_all();
+            /*
+            for (a = 0; a < 100; a++)
             {
-                player->sanityation +=1;
-                if(player->sanityation == 100)continue;
+                gf3d_particle_draw(&particle[a]);
             }
-        }
-
-
-
-
-        gf3d_vgraphics_render_start();
-
-            //3D draws
-                gf3d_model_draw_sky(sky,skyMat,gfc_color(1,1,1,1));
-                world_draw(w);
-                entity_draw_all();
-                /*
-                for (a = 0; a < 100; a++)
-                {
-                    gf3d_particle_draw(&particle[a]);
-                }
-                */
+            */
             //2D draws
-                //gf2d_draw_rect_filled(gfc_rect(10 ,10,1000,32),gfc_color8(128,128,128,255));
-                gf2d_font_draw_line_tag(playerStatuses,FT_H1,gfc_color(1,0,1,1), vector2d(10,10));
-                gf2d_font_draw_line_tag(gatheredResources,FT_Normal,gfc_color(0,1,0,1), vector2d(10,30));
+            //gf2d_draw_rect_filled(gfc_rect(10 ,10,1000,32),gfc_color8(128,128,128,255));
+            gf2d_font_draw_line_tag(playerStatuses,FT_H1,gfc_color(1,0,1,1), vector2d(10,10));
+            gf2d_font_draw_line_tag(gatheredResources,FT_Normal,gfc_color(0,1,0,1), vector2d(10,30));
 
-                //gf2d_font_draw_line_tag(hydrationValue,FT_H1,gfc_color(1,1,1,1), vector2d(10,30));
-                
-                //gf2d_draw_rect(gfc_rect(10 ,10,1000,32),gfc_color8(255,255,255,255));
-                
-                gf2d_sprite_draw(mouse,vector2d(mousex,mousey),vector2d(2,2),vector3d(8,8,0),gfc_color(0.3,.9,1,0.9),(Uint32)mouseFrame);
+            //gf2d_font_draw_line_tag(hydrationValue,FT_H1,gfc_color(1,1,1,1), vector2d(10,30));
+
+            //gf2d_draw_rect(gfc_rect(10 ,10,1000,32),gfc_color8(255,255,255,255));
+
+            // gf2d_sprite_draw(mouse,vector2d(mousex,mousey),vector2d(2,2),vector3d(8,8,0),gfc_color(0.3,.9,1,0.9),(Uint32)mouseFrame);
+            //slog("X: %f Y: %f \n", player->position.x, player->position.y);
+        }
+            // //3D draws
+            //     gf3d_model_draw_sky(sky,skyMat,gfc_color(1,1,1,1));
         gf3d_vgraphics_render_end();
 
-        if (gfc_input_command_down("exit"))done = 1; // exit condition
+        if (gfc_input_command_down("exit"))done = 1; // e if (keys[SDL_SCANCODE_S])xit condition
     }    
     
     world_delete(w);
-    vkDeviceWaitIdle(gf3d_vgraphics_get_default_logical_device());    
+    vkDeviceWaitIdle(gf3d_vgraphics_get_default_logical_device());
+    Mix_FreeMusic(ambiance);
     //cleanup
     slog("gf3d program end");
     slog_sync();

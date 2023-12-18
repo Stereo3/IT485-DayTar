@@ -57,6 +57,10 @@ typedef struct Entity_S
     Uint8   isWeapon;
     Uint8   isEnemy;
     Uint8   isResource;
+    Uint8   isProjectile;
+
+    Vector2D w;
+    //Vector3D ww;
 
     int hydration;
     int satiation;
@@ -69,6 +73,10 @@ typedef struct Entity_S
     int water;
     float calefaction;
     const char *entityName;
+    float proj_velocity;
+    Uint64 proj_ttl;
+    Uint64 proj_spawntime;
+    Uint32 proj_damage;
 }Entity;
 
 /**

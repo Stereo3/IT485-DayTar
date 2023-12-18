@@ -40,6 +40,7 @@ Entity *enemy_new(Vector3D position, const char *modelToLoad, const char *name){
     enemy->targetRadius.y = 50;
     enemy->targetRadius.z = 50;
     enemy->targetRadius.r = 50;
+    enemy->health = 100;
     return enemy;
 }
 
@@ -91,6 +92,11 @@ void enemy_update(Entity *self){
     if(self->position.z < height){
         self->position.z = height;
         if(self->velocity.z < 0)self->velocity.z = 0;
+    }
+
+    if(self->health <= 0)
+    {
+        entity_free(self);
     }
 }
 

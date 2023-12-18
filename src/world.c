@@ -94,15 +94,6 @@ World *world_load(char *filename)
 
     }
 
-    ejson = sj_object_get_value(json,"wep1");
-    entName = sj_get_string_value(sj_object_get_value(ejson,"entityName"));
-    slog("entName:|%s|", entName);
-
-    if(gfc_stricmp(entName, "AK") == 0)
-    {
-        gfc_list_append(w->entityList,weapon_new());
-    }
-
     ejson = sj_object_get_value(json,"agumon");
     entName = sj_get_string_value(sj_object_get_value(ejson,"entityName"));
     slog("entName:|%s|", entName);

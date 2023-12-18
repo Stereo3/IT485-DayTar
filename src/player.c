@@ -4,12 +4,18 @@
 #include "gf3d_camera.h"
 #include "player.h"
 #include "world.h"
+#include "gfc_audio.h"
+#include "weapon.h"
+#include "projectile.h"
 
 //static int thirdPersonMode = 0;
 void player_think(Entity *self);
 void player_update(Entity *self);
 //void player_free(Entity *self);
 Vector3D camera_rotation;
+Entity *collisionPartner;
+Entity *equippedWep;
+Sound *pickupsfx;
 
 
 Entity *player_new(Vector3D position)
@@ -74,6 +80,7 @@ void player_think(Entity *self)
 
 
 
+
     mouse.x = mx;
     mouse.y = my;
     w = vector2d_from_angle(self->rotation.z);
@@ -115,8 +122,38 @@ void player_think(Entity *self)
     if (mouse.y != 0)camera_rotation.x += (mouse.y * 0.001);
     self->rotation.z = camera_rotation.z;
 
+    if (keys[SDL_SCANCODE_1])
+    {
+        entity_free(equippedWep);
+        equippedWep = weapon_new("models/ak47.model", "AK");
+    }
+
+    if (keys[SDL_SCANCODE_2])
+    {
+        entity_free(equippedWep);
+        equippedWep = weapon_new("models/1911.model", "1911");
+    }
 
 
+
+    if(keys[SDL_SCANCODE_LCTRL])
+    {
+        if(!equippedWep)
+        {
+            slog("No weapon equipped cannot shoot");
+        }
+
+        if(gfc_stricmp(equippedWep->entityName, "AK") == 0)
+        {
+            projectile_new("models/sphere.model", "AKbullet");
+            SDL_Delay(100);
+        }
+        else if(gfc_stricmp(equippedWep->entityName, "1911") == 0)
+        {
+            projectile_new("models/sphere.model", "1911bullet");
+            SDL_Delay(100);
+        }
+    }
 
 
 //     if (keys[SDL_SCANCODE_F3])
@@ -124,6 +161,59 @@ void player_think(Entity *self)
 //         thirdPersonMode = !thirdPersonMode;
 //         self->hidden = !self->hidden;
 //     }
+
+
+        collisionPartner = entity_get_collision_partner(self);
+        if (collisionPartner != NULL)
+        {
+            //slog("Collision Partner Name: %s", collisionPartner->entityName);
+            if(collisionPartner->isEnemy == 1)
+            {
+                SDL_Delay(1);
+                self->sanityation -= 1;
+            }
+            else if(collisionPartner->isResource == 1)
+            {
+                if(gfc_stricmp(collisionPartner->entityName, "log") == 0)
+                {
+                    pickupsfx = gfc_sound_load("sfx/log.wav",1,0);
+                    gfc_sound_play(pickupsfx,0,1,0,0);
+                    gfc_sound_free(pickupsfx);
+                    self->wood++;
+                    entity_free(collisionPartner);
+                }
+                else if(gfc_stricmp(collisionPartner->entityName, "concrete") == 0)
+                {
+                    pickupsfx = gfc_sound_load("sfx/concrete.wav",1,0);
+                    gfc_sound_play(pickupsfx,0,1,0,0);
+                    gfc_sound_free(pickupsfx);
+                    self->concrete++;
+                    entity_free(collisionPartner);
+                }
+                else if(gfc_stricmp(collisionPartner->entityName, "metal") == 0)
+                {
+                    self->metal++;
+                    entity_free(collisionPartner);
+                }
+                else if(gfc_stricmp(collisionPartner->entityName, "fuel") == 0)
+                {
+                    self->fuel += 10;
+                    entity_free(collisionPartner);
+                }
+                else if(gfc_stricmp(collisionPartner->entityName, "water") == 0)
+                {
+                    self->water += 25;
+                    entity_free(collisionPartner);
+                }
+            }
+        }
+        else
+        {
+            if(self->sanityation < 100)
+            {
+                self->sanityation +=1;
+            }
+        }
 }
 
 void player_update(Entity *self)

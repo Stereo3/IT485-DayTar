@@ -6,7 +6,6 @@
 
 void resource_think(Entity *self);
 void resource_update(Entity *self);
-void resource_free(Entity *self);
 
 Entity *resource_new(Vector3D position, const char *modelToLoad, const char *name){
 
@@ -24,15 +23,32 @@ Entity *resource_new(Vector3D position, const char *modelToLoad, const char *nam
     log->selectedColor = gfc_color(0,0,0,1);
     log->color = gfc_color(1,1,1,1);
     log->model = gf3d_model_load(modelToLoad);
-    log->scale = vector3d(0.0039,0.0039,0.0039);
+
     //log->scale = vector3d(1,1,1);
     log->think = resource_think;
     log->update = resource_update;
-    log->free = resource_free;
     log->isResource = 1;
     vector3d_copy(log->position, position);
     //log->rotation.y = GFC_HALF_PI;
     log->entityName = name;
+
+    if (gfc_stricmp(name, "fuel") == 0)
+    {
+        log->scale = vector3d(5,5,5);
+    }
+    else if (gfc_stricmp(name, "metal") == 0)
+    {
+        log->scale = vector3d(1,1,1);
+    }
+    else if (gfc_stricmp(name, "water") == 0)
+    {
+        log->scale = vector3d(1,1,1);
+    }
+    else
+    {
+        log->scale = vector3d(0.0039,0.0039,0.0039);
+    }
+
     return log;
 }
 
@@ -67,6 +83,3 @@ void resource_update(Entity *self){
     }
 }
 
-void resource_free(Entity *self){
-    if(!self)return;
-}

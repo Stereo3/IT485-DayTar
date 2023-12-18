@@ -26,6 +26,7 @@ Entity *agumon_new(Vector3D position)
     ent->think = agumon_think;
     ent->update = agumon_update;
     ent->isEnemy = 1;
+    ent->health = 100;
     vector3d_copy(ent->position,position);
     return ent;
 }
@@ -51,6 +52,10 @@ void agumon_update(Entity *self)
         if(self->velocity.z < 0)self->velocity.z = 0;
     }
 
+    if(self->health <= 0)
+    {
+        entity_free(self);
+    }
 
 
 

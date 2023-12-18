@@ -1,0 +1,7 @@
+{
+    "model":
+    {
+        "model":"models/gun/defaultbullet.obj",
+        "texture":"image/default.png"
+    }
+}

@@ -2,6 +2,7 @@
 #define __PLAYER_H__
 
 #include "entity.h"
+#include <SDL.h>
 
 
 // typedef struct rlPlayer_S

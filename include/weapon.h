@@ -9,7 +9,7 @@
  * @param position where to spawn the weapon at
  * @return NULL on error, or an weapon entity pointer on success
  */
-Entity *weapon_new(void);
+Entity *weapon_new(const char *modelToLoad, const char *name);
 
 #endif
 

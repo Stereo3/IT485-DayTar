@@ -7,7 +7,7 @@ void weapon_think(Entity *self);
 void weapon_update(Entity *self);
 void weapon_free(Entity *self);
 
-Entity *weapon_new(void){
+Entity *weapon_new(const char *modelToLoad, const char *name){
 
     Entity *wep = NULL;
     Entity *player = NULL;
@@ -22,8 +22,7 @@ Entity *weapon_new(void){
 
     wep->selectedColor = gfc_color(0,0,0,1);
     wep->color = gfc_color(1,1,1,1);
-    wep->model = gf3d_model_load("models/ak47.model");
-    wep->scale = vector3d(0.25,0.25,0.25);
+    wep->model = gf3d_model_load(modelToLoad);
     wep->think = weapon_think;
     wep->update = weapon_update;
     wep->free = weapon_free;
@@ -33,7 +32,18 @@ Entity *weapon_new(void){
     wep->bounds.z = 0;
     wep->bounds.r = 0;
     vector3d_copy(wep->position, player->position);
-    wep->entityName = "AK";
+    wep->entityName = name;
+
+    if(gfc_stricmp(name, "AK") == 0)
+    {
+        wep->scale = vector3d(0.25,0.25,0.25);
+    }
+
+    if(gfc_stricmp(name, "1911") == 0)
+    {
+        wep->scale = vector3d(0.125,0.125,0.125);
+    }
+
     return wep;
 }
 
@@ -46,7 +56,16 @@ void weapon_think(Entity *self){
     if(!player)return;
     self->rotation.z = player->rotation.z;
     //self->rotation.x = player->rotation.x;
-    self->position.z = ((player->position.z) - 1);
+
+    if(gfc_stricmp(self->entityName, "AK") == 0)
+    {
+       self->position.z = ((player->position.z) - 1);
+    }
+
+    if(gfc_stricmp(self->entityName, "1911") == 0)
+    {
+        self->position.z = ((player->position.z) - 5);
+    }
 }
 
 void weapon_update(Entity *self){
@@ -56,8 +75,8 @@ void weapon_update(Entity *self){
     if(!self)return;
     if(!player)return;
 
-    // self->position.y = player->position.y;
-    // self->position.x = player->position.x;
+     //self->position.y = player->position.y;
+     //self->position.x = player->position.x;
 }
 
 void weapon_free(Entity *self){
