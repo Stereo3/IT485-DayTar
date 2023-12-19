@@ -40,6 +40,8 @@ int main(int argc,char *argv[])
     int a;
     TextBlock playerStatuses;
     TextBlock gatheredResources;
+    TextLine equippedWepText;
+    TextLine healthText;
     
     //Sprite *mouse = NULL;
     int mousex,mousey;
@@ -56,9 +58,12 @@ int main(int argc,char *argv[])
     Matrix4 skyMat;
     Model *sky;
     Uint8 mainMenuBool = 1;
+    Uint8 inventoryBool = 0;
     Sprite *mainMenuImg;
+    Sprite *inventoryImg;
     const Uint8 * keys;
     keys = SDL_GetKeyboardState(NULL);
+    const char *wepName = NULL;
 
     for (a = 1; a < argc;a++)
     {
@@ -82,6 +87,8 @@ int main(int argc,char *argv[])
     
     //mouse = gf2d_sprite_load("images/pointer.png",32,32, 16);
     mainMenuImg = gf2d_sprite_load_image("images/mainmenu.png");
+    inventoryImg = gf2d_sprite_load_image("images/inventory.png");
+
 
     w = world_load("config/testworld.json");
 
@@ -174,6 +181,39 @@ int main(int argc,char *argv[])
         ,player->fuel
         ,player->water);
 
+
+
+            switch(player->equippedWepNum)
+            {
+                case 1:
+                    wepName = "AK";
+                    break;
+                case 2:
+                    wepName = "1911";
+                    break;
+                case 3:
+                    wepName = "MP5";
+                    break;
+                case 4:
+                    wepName = "M700";
+                    break;
+                case 5:
+                    wepName = "870";
+                    break;
+                default:
+                    wepName = "No Weapon Equipped";
+                    break;
+            }
+
+            if(!wepName)
+            {
+                slog("No wepName");
+            }
+            gfc_line_sprintf(equippedWepText, "Equipped Weapon: %s", wepName);
+
+
+        gfc_line_sprintf(healthText, "Health: %i", player->health);
+
         //slog("Volume: %i", Mix_VolumeMusic(-1));
 
         gf3d_vgraphics_render_start();
@@ -202,6 +242,8 @@ int main(int argc,char *argv[])
             entity_update_all();
             world_draw(w);
             entity_draw_all();
+
+            gf3d_model_draw_sky(sky,skyMat,gfc_color(1,1,1,1));
             /*
             for (a = 0; a < 100; a++)
             {
@@ -210,8 +252,15 @@ int main(int argc,char *argv[])
             */
             //2D draws
             //gf2d_draw_rect_filled(gfc_rect(10 ,10,1000,32),gfc_color8(128,128,128,255));
-            gf2d_font_draw_line_tag(playerStatuses,FT_H1,gfc_color(1,0,1,1), vector2d(10,10));
-            gf2d_font_draw_line_tag(gatheredResources,FT_Normal,gfc_color(0,1,0,1), vector2d(10,30));
+
+            gf2d_font_draw_line_tag(healthText,FT_Normal,gfc_color(0,1,0,1), vector2d(10,10));
+            gf2d_font_draw_line_tag(equippedWepText,FT_Normal,gfc_color(1,1,0,1), vector2d(10,30));
+            if(keys[SDL_SCANCODE_TAB])
+            {
+                gf2d_sprite_draw(inventoryImg,vector2d(200,200),vector2d(2,2),vector3d(0,0,0),gfc_color(1,1,1,1),0);
+                gf2d_font_draw_line_tag(playerStatuses,FT_H1,gfc_color(1,0,1,1), vector2d(300,350));
+                gf2d_font_draw_line_tag(gatheredResources,FT_Normal,gfc_color(0,1,0,1), vector2d(450,365));
+            }
 
             //gf2d_font_draw_line_tag(hydrationValue,FT_H1,gfc_color(1,1,1,1), vector2d(10,30));
 
@@ -219,6 +268,12 @@ int main(int argc,char *argv[])
 
             // gf2d_sprite_draw(mouse,vector2d(mousex,mousey),vector2d(2,2),vector3d(8,8,0),gfc_color(0.3,.9,1,0.9),(Uint32)mouseFrame);
             //slog("X: %f Y: %f \n", player->position.x, player->position.y);
+            if(player->health <= 0)
+            {
+                mainMenuBool = 1;
+                player->health = 100;
+                player->position = vector3d(-50,0,0);
+            }
         }
             // //3D draws
             //     gf3d_model_draw_sky(sky,skyMat,gfc_color(1,1,1,1));

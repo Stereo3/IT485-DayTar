@@ -1,4 +1,5 @@
 #include <assert.h>
+//#include <stdio.h>
 
 #include "simple_logger.h"
 
@@ -10,6 +11,7 @@
 #include "gf3d_uniform_buffers.h"
 
 #include "gf3d_model.h"
+//#include "entity.h"
 
 typedef struct
 {
@@ -157,7 +159,38 @@ Model * gf3d_model_load_from_config(SJson *json)
     texture = sj_get_string_value(sj_object_get_value(json,"texture"));
     return gf3d_model_load_full(model,texture);
 }
+/*
+void gf3d_model_play_anim(Entity *self, const char *filename)
+{
+    SJson *json,*config;
+    Model *model;
+    char modelStr[7];
 
+    if (!filename)
+    {
+        slog("Cannot play play this animation file");
+    }
+    json = sj_load(filename);
+    if (!json)
+    {
+        slog("failed to create json from anim file");
+        sj_free(json);
+    }
+    for(int i = 0; i <= 12; i++)
+    {
+        sprintf(modelStr, "model%i", i);
+        config = sj_object_get_value(json, modelStr);
+        if (!config)
+        {
+            slog("file %s contains no model object",filename);
+            sj_free(json);
+            return NULL;
+        }
+        self->model = gf3d_model_load_from_config(config);
+    }
+
+    sj_free(json);
+}*/
 
 void gf3d_model_free(Model *model)
 {

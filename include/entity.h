@@ -50,6 +50,7 @@ typedef struct Entity_S
     int      health;     /**<entity dies when it reaches zero*/
     // WHATEVER ELSE WE MIGHT NEED FOR ENTITIES
     struct Entity_S *target;    /**<entity to target for weapons / ai*/
+    struct Entity_S *equippedWep;
     
     void *customData;   /**<IF an entity needs to keep track of extra data, we can do it here*/
 
@@ -59,6 +60,7 @@ typedef struct Entity_S
     Uint8   isResource;
     Uint8   isProjectile;
     Uint8   isFired;
+    Uint8   isChasing;
 
     Vector2D w;
     //Vector3D ww;
@@ -78,6 +80,7 @@ typedef struct Entity_S
     Uint64 proj_ttl;
     Uint64 proj_spawntime;
     Uint32 proj_damage;
+    Uint32 equippedWepNum;
     //Uint64 wep_firerate;
 }Entity;
 

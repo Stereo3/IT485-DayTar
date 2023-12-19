@@ -194,15 +194,15 @@ World *world_load(char *filename)
     }
 
 
-    ejson = sj_object_get_value(json,"sprinter");
+    ejson = sj_object_get_value(json,"jess");
     entName = sj_get_string_value(sj_object_get_value(ejson,"entityName"));
     slog("entName: %s", entName);
 
-    if(gfc_stricmp(entName, "sprinter") == 0)
+    if(gfc_stricmp(entName, "jess") == 0)
     {
         sj_value_as_vector3d(sj_object_get_value(ejson,"position"),&entPosition);
         modelName = sj_get_string_value(sj_object_get_value(ejson,"model"));
-        entName = "sprinter";
+        entName = "jess";
         gfc_list_append(w->entityList,enemy_new(entPosition, modelName, entName));
     }
 

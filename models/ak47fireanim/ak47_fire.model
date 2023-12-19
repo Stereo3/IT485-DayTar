@@ -1,0 +1,74 @@
+{
+    "model0":
+    {
+        "model":"models/ak47fireanim/ak47fire1.obj",
+        "texture":"models/gun/ak47.png"
+    },
+
+    "model1":
+    {
+        "model":"models/ak47fireanim/ak47fire2.obj",
+        "texture":"models/gun/ak47.png"
+    },
+
+    "model2":
+    {
+        "model":"models/ak47fireanim/ak47fire3.obj",
+        "texture":"models/gun/ak47.png"
+    },
+
+    "model3":
+    {
+        "model":"models/ak47fireanim/ak47fire4.obj",
+        "texture":"models/gun/ak47.png"
+    },
+
+    "model4":
+    {
+        "model":"models/ak47fireanim/ak47fire5.obj",
+        "texture":"models/gun/ak47.png"
+    },
+
+    "model5":
+    {
+        "model":"models/ak47fireanim/ak47fire6.obj",
+        "texture":"models/gun/ak47.png"
+    },
+
+    "model6":
+    {
+        "model":"models/ak47fireanim/ak47fire7.obj",
+        "texture":"models/gun/ak47.png"
+    },
+
+    "model7":
+    {
+        "model":"models/ak47fireanim/ak47fire8.obj",
+        "texture":"models/gun/ak47.png"
+    },
+
+    "model8":
+    {
+        "model":"models/ak47fireanim/ak47fire9.obj",
+        "texture":"models/gun/ak47.png"
+    },
+
+    "model9":
+    {
+        "model":"models/ak47fireanim/ak47fire10.obj",
+        "texture":"models/gun/ak47.png"
+    },
+
+    "model10":
+    {
+        "model":"models/ak47fireanim/ak47fire11.obj",
+        "texture":"models/gun/ak47.png"
+    },
+
+    "model11":
+    {
+        "model":"models/ak47fireanim/ak47fire12.obj",
+        "texture":"models/gun/ak47.png"
+    }
+
+}

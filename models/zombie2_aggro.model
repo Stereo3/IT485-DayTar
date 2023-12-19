@@ -1,0 +1,7 @@
+{
+    "model":
+    {
+        "model":"models/zombie/zombie2aggro.obj",
+        "texture":"models/zombie/zombie.png"
+    }
+}

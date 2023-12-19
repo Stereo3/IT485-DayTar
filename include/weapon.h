@@ -2,6 +2,8 @@
 #define __WEAPON_H__
 
 #include "entity.h"
+#include <stdio.h>
+#include "simple_json.h"
 
 
 /**
@@ -19,6 +21,11 @@ Entity *weapon_new(const char *modelToLoad, const char *name);
  * @return Does not return any value
  */
 void weapon_fire(Entity *self, const char *name);
+
+void weapon_fire_done(Entity *self, const char *name);
+
+
+void gf3d_model_play_anim(Entity *self, const char *filename);
 
 
 #endif

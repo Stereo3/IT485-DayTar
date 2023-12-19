@@ -66,6 +66,11 @@ Entity *entity_new()
              entity_manager.entity_list[i].bounds.z = 2.5;
              entity_manager.entity_list[i].bounds.r = 5;
 
+             if(!entity_manager.entity_list[i].isProjectile == 0)
+             {
+                entity_manager.entity_list[i].selected = 1;
+             }
+
 
             
             entity_manager.entity_list[i].color = gfc_color(1,1,1,1);

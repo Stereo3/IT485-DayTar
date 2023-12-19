@@ -46,11 +46,11 @@ Entity *enemy_new(Vector3D position, const char *modelToLoad, const char *name){
     {
         enemy->health = 100;
     }
-    else if(gfc_stricmp(name, "armoued") == 0)
+    else if(gfc_stricmp(name, "armoured") == 0)
     {
         enemy->health = 200;
     }
-    else if(gfc_stricmp(name, "sprinter") == 0)
+    else if(gfc_stricmp(name, "jess") == 0)
     {
         enemy->health = 150;
     }
@@ -70,10 +70,20 @@ void enemy_think(Entity *self){
     if(!player)return;
 
     w = vector2d_from_angle(self->rotation.z);
-    forward.x = ((w.x)*0.125);
-    forward.y = ((w.y)*0.125);
-    right.x = ((w.x)*0.125);
-    right.y = ((w.y)*0.125);
+    if(gfc_stricmp(self->entityName, "jess") == 0)
+    {
+        forward.x = ((w.x)*0.5);
+        forward.y = ((w.y)*0.5);
+        right.x = ((w.x)*0.5);
+        right.y = ((w.y)*0.5);
+    }
+    else
+    {
+        forward.x = ((w.x)*0.125);
+        forward.y = ((w.y)*0.125);
+        right.x = ((w.x)*0.125);
+        right.y = ((w.y)*0.125);
+    }
 
     //slog("Distance Difference X: %f", ((player->position.x)*2 - (self->position.x)*2));
     //slog("Distance Difference Y: %f", ((player->position.y)*2 - (self->position.y)*2));
@@ -82,6 +92,46 @@ void enemy_think(Entity *self){
     {
         self->rotation.z = player->rotation.z;
         vector3d_add(self->position,self->position,-forward);
+        if(gfc_stricmp(self->entityName, "walker") == 0)
+        {
+            gf3d_model_free(self->model);
+            self->model = gf3d_model_load("models/zombie_aggro.model");
+            self->isChasing = 1;
+        }
+        else if(gfc_stricmp(self->entityName, "armoured") == 0)
+        {
+            gf3d_model_free(self->model);
+            self->model = gf3d_model_load("models/zombie2_aggro.model");
+            self->isChasing = 1;
+        }
+        else if(gfc_stricmp(self->entityName, "jess") == 0)
+        {
+            gf3d_model_free(self->model);
+            self->model = gf3d_model_load("models/zombie3_aggro.model");
+            self->isChasing = 1;
+        }
+    }
+    else if(vector3d_magnitude_between(player->position, self->position) > 50 && self->isChasing == 1)
+    {
+
+        if(gfc_stricmp(self->entityName, "walker") == 0)
+        {
+            gf3d_model_free(self->model);
+            self->model = gf3d_model_load("models/zombie.model");
+            self->isChasing = 0;
+        }
+        else if(gfc_stricmp(self->entityName, "armoured") == 0)
+        {
+            gf3d_model_free(self->model);
+            self->model = gf3d_model_load("models/zombie2.model");
+            self->isChasing = 0;
+        }
+        else if(gfc_stricmp(self->entityName, "jess") == 0)
+        {
+            gf3d_model_free(self->model);
+            self->model = gf3d_model_load("models/zombie3.model");
+            self->isChasing = 0;
+        }
     }
 
 }

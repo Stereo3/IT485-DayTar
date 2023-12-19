@@ -14,7 +14,7 @@ void player_update(Entity *self);
 //void player_free(Entity *self);
 Vector3D camera_rotation;
 Entity *collisionPartner;
-Entity *equippedWep;
+//Entity *equippedWep;
 Sound *pickupsfx;
 
 
@@ -77,9 +77,7 @@ void player_think(Entity *self)
     SDL_GetRelativeMouseState(&mx,&my);
     const Uint8 * keys;
     keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
-
-
-
+    Uint64 theCurrentTime = SDL_GetTicks64();
 
     mouse.x = mx;
     mouse.y = my;
@@ -89,6 +87,7 @@ void player_think(Entity *self)
     w = vector2d_from_angle(self->rotation.z - GFC_HALF_PI);
     right.x = ((w.x)*0.0625);
     right.y = ((w.y)*0.0625);
+
     if (keys[SDL_SCANCODE_W])
     {
         vector3d_add(self->position,self->position,forward);
@@ -122,78 +121,121 @@ void player_think(Entity *self)
     if (mouse.y != 0)camera_rotation.x += (mouse.y * 0.001);
     self->rotation.z = camera_rotation.z;
 
-    if (keys[SDL_SCANCODE_1])
+    if (keys[SDL_SCANCODE_Q])
     {
-        entity_free(equippedWep);
-        equippedWep = weapon_new("models/ak47.model", "AK");
+        entity_free(self->equippedWep);
+        self->equippedWep = weapon_new("models/ak47.model", "AK");
+        self->equippedWepNum = 1;
     }
 
     if (keys[SDL_SCANCODE_2])
     {
-        entity_free(equippedWep);
-        equippedWep = weapon_new("models/1911.model", "1911");
+        entity_free(self->equippedWep);
+        self->equippedWep = weapon_new("models/1911.model", "1911");
+        self->equippedWepNum = 2;
     }
 
     if (keys[SDL_SCANCODE_3])
     {
-        entity_free(equippedWep);
-        equippedWep = weapon_new("models/mp5.model", "MP5");
+        entity_free(self->equippedWep);
+        self->equippedWep = weapon_new("models/mp5.model", "MP5");
+        self->equippedWepNum = 3;
     }
 
     if (keys[SDL_SCANCODE_4])
     {
-        entity_free(equippedWep);
-        equippedWep = weapon_new("models/m700.model", "M700");
+        entity_free(self->equippedWep);
+        self->equippedWep = weapon_new("models/m700.model", "M700");
+        self->equippedWepNum = 4;
     }
 
     if (keys[SDL_SCANCODE_5])
     {
-        entity_free(equippedWep);
-        equippedWep = weapon_new("models/870.model", "870");
+        entity_free(self->equippedWep);
+        self->equippedWep = weapon_new("models/870.model", "870");
+        self->equippedWepNum = 5;
     }
 
 
-    if (keys[SDL_SCANCODE_Q])
+    if (keys[SDL_SCANCODE_1])
     {
-        entity_free(equippedWep);
+        entity_free(self->equippedWep);
+        self->equippedWepNum = 0;
     }
 
 
-
-    if(keys[SDL_SCANCODE_LCTRL])
+    if(!self->equippedWep)
     {
-        if(!equippedWep)
+            slog("No weapon equipped, cannot shoot");
+    }
+    else
+    {
+
+        if(keys[SDL_SCANCODE_E] && self->equippedWep->isFired == 0)
         {
-            slog("No weapon equipped cannot shoot");
+            if(!self->equippedWep)
+            {
+                slog("No weapon equipped cannot shoot");
+            }
+
+            if(gfc_stricmp(self->equippedWep->entityName, "AK") == 0)
+            {
+                weapon_fire(self->equippedWep, self->equippedWep->entityName);
+                projectile_new("models/sphere.model", "AKbullet");
+                SDL_Delay(100);
+            }
+            else if(gfc_stricmp(self->equippedWep->entityName, "1911") == 0)
+            {
+                weapon_fire(self->equippedWep, self->equippedWep->entityName);
+                projectile_new("models/sphere.model", "1911bullet");
+                SDL_Delay(100);
+            }
+            else if(gfc_stricmp(self->equippedWep->entityName, "MP5") == 0)
+            {
+                weapon_fire(self->equippedWep, self->equippedWep->entityName);
+                projectile_new("models/sphere.model", "MP5bullet");
+                SDL_Delay(100);
+            }
+            else if(gfc_stricmp(self->equippedWep->entityName, "M700") == 0)
+            {
+                weapon_fire(self->equippedWep, self->equippedWep->entityName);
+                projectile_new("models/sphere.model", "M700bullet");
+                SDL_Delay(100);
+            }
+            else if(gfc_stricmp(self->equippedWep->entityName, "870") == 0)
+            {
+                weapon_fire(self->equippedWep, self->equippedWep->entityName);
+                projectile_new("models/sphere.model", "870bullet");
+                SDL_Delay(100);
+            }
+
+        }
+        else if(self->equippedWep->isFired == 1)
+        {
+            if(gfc_stricmp(self->equippedWep->entityName, "AK") == 0)
+            {
+                weapon_fire_done(self->equippedWep, self->equippedWep->entityName);
+            }
+            else if(gfc_stricmp(self->equippedWep->entityName, "1911") == 0)
+            {
+                weapon_fire_done(self->equippedWep, self->equippedWep->entityName);
+            }
+            else if(gfc_stricmp(self->equippedWep->entityName, "MP5") == 0)
+            {
+                weapon_fire_done(self->equippedWep, self->equippedWep->entityName);
+            }
+            else if(gfc_stricmp(self->equippedWep->entityName, "M700") == 0)
+            {
+                weapon_fire_done(self->equippedWep, self->equippedWep->entityName);
+            }
+            else if(gfc_stricmp(self->equippedWep->entityName, "870") == 0)
+            {
+                weapon_fire_done(self->equippedWep, self->equippedWep->entityName);
+            }
         }
 
-        if(gfc_stricmp(equippedWep->entityName, "AK") == 0)
-        {
-            weapon_fire(equippedWep, equippedWep->entityName);
-            projectile_new("models/sphere.model", "AKbullet");
-            SDL_Delay(100);
-        }
-        else if(gfc_stricmp(equippedWep->entityName, "1911") == 0)
-        {
-            projectile_new("models/sphere.model", "1911bullet");
-            SDL_Delay(100);
-        }
-        else if(gfc_stricmp(equippedWep->entityName, "MP5") == 0)
-        {
-            projectile_new("models/sphere.model", "MP5bullet");
-            SDL_Delay(100);
-        }
-        else if(gfc_stricmp(equippedWep->entityName, "M700") == 0)
-        {
-            projectile_new("models/sphere.model", "M700bullet");
-            SDL_Delay(100);
-        }
-        else if(gfc_stricmp(equippedWep->entityName, "870") == 0)
-        {
-            projectile_new("models/sphere.model", "870bullet");
-            SDL_Delay(100);
-        }
     }
+
 
 
     if (keys[SDL_SCANCODE_F3])
@@ -218,6 +260,7 @@ void player_think(Entity *self)
             {
                 SDL_Delay(1);
                 self->sanityation -= 1;
+                self->health -= 1;
             }
             else if(collisionPartner->isResource == 1)
             {

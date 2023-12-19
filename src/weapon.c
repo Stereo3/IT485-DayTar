@@ -99,8 +99,8 @@ void weapon_update(Entity *self){
     if(!self)return;
     if(!player)return;
 
-     //self->position.y = player->position.y;
-     //self->position.x = player->position.x;
+     self->position.y = player->position.y;
+     self->position.x = player->position.x;
 }
 
 void weapon_fire(Entity *self, const char *name)
@@ -112,11 +112,98 @@ void weapon_fire(Entity *self, const char *name)
 
     if(gfc_stricmp(self->entityName, "AK") == 0)
     {
+        gf3d_model_free(self->model);
         self->model = gf3d_model_load("models/ak47_fire.model");
+        //wep_model_play_anim(self, "models/ak47fireanim/ak47_fire.model");
         self->isFired = 1;
     }
+    else if(gfc_stricmp(self->entityName, "1911") == 0)
+    {
+        self->model = gf3d_model_load("models/1911_fire.model");
+        self->isFired = 1;
+    }
+    else if(gfc_stricmp(self->entityName, "MP5") == 0)
+    {
+        self->model = gf3d_model_load("models/mp5_fire.model");
+        self->isFired = 1;
+    }
+    else if(gfc_stricmp(self->entityName, "M700") == 0)
+    {
+        self->model = gf3d_model_load("models/m700_fire.model");
+        self->isFired = 1;
+    }
+    else if(gfc_stricmp(self->entityName, "870") == 0)
+    {
+        self->model = gf3d_model_load("models/870_fire.model");
+        self->isFired = 1;
+    }
+}
+
+void weapon_fire_done(Entity *self, const char *name)
+{
+
+    if(gfc_stricmp(self->entityName, "AK") == 0)
+    {
+        gf3d_model_free(self->model);
+        self->model = gf3d_model_load("models/ak47.model");
+        //wep_model_play_anim(self, "models/ak47fireanim/ak47_fire.model");
+        self->isFired = 0;
+    }
+    else if(gfc_stricmp(self->entityName, "1911") == 0)
+    {
+        self->model = gf3d_model_load("models/1911.model");
+        self->isFired = 0;
+    }
+    else if(gfc_stricmp(self->entityName, "MP5") == 0)
+    {
+        self->model = gf3d_model_load("models/mp5.model");
+        self->isFired = 0;
+    }
+    else if(gfc_stricmp(self->entityName, "M700") == 0)
+    {
+        self->model = gf3d_model_load("models/m700.model");
+        self->isFired = 0;
+    }
+    else if(gfc_stricmp(self->entityName, "870") == 0)
+    {
+        self->model = gf3d_model_load("models/870.model");
+        self->isFired = 0;
+    }
+}
 
 
+
+void wep_model_play_anim(Entity *wepToAnim, const char *filename)
+{
+    SJson *json,*config;
+    Model *model;
+    char modelStr[7];
+
+    if (!filename)
+    {
+        slog("Cannot play play this animation file");
+    }
+    json = sj_load(filename);
+    if (!json)
+    {
+        slog("failed to create json from anim file");
+        sj_free(json);
+    }
+    for(int i = 0; i <= 11; i++)
+    {
+        sprintf(modelStr, "model%i", i);
+        slog("modelStr: %s", modelStr);
+        config = sj_object_get_value(json, modelStr);
+        if (!config)
+        {
+            slog("file %s contains no model object",filename);
+            continue;
+        }
+        gf3d_model_free(wepToAnim->model);
+        wepToAnim->model = gf3d_model_load_from_config(config);
+    }
+
+    sj_free(json);
 }
 
 

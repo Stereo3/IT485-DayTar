@@ -68,14 +68,14 @@
     "armoured":
     {
         "model":"models/zombie2.model",
-        "position": [300,0,0],
+        "position": [350,0,0],
         "entityName":"armoured"
     },
 
-    "sprinter":
+    "jess":
     {
         "model":"models/zombie3.model",
-        "position": [350,0,0],
-        "entityName":"sprinter"
+        "position": [450,0,0],
+        "entityName":"jess"
     }
 }

@@ -31,6 +31,7 @@
 
 #include "gf3d_texture.h"
 #include "gf3d_mesh.h"
+//#include "entity.h"
 
 
 typedef struct
@@ -48,7 +49,7 @@ typedef struct
  * @param chain_length how many swap chains are supported
  * @param device the logical device to use
  */
-void gf3d_model_manager_init(Uint32 max_models);
+void gf3d_model_mdanager_init(Uint32 max_models);
 
 /**
  * @brief get a blank model address
@@ -108,5 +109,9 @@ void gf3d_model_draw_sky(Model *model,Matrix4 modelMat,Color color);
  * @brief free a model
  */
 void gf3d_model_free(Model *model);
+
+void gf3d_model_delete(Model *model);
+
+// void gf3d_model_play_anim(Entity *self, const char *filename);
 
 #endif

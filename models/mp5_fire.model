@@ -1,0 +1,7 @@
+{
+    "model":
+    {
+        "model":"models/gun/mp5fire.obj",
+        "texture":"models/gun/mp5.png"
+    }
+}
