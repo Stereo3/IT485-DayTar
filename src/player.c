@@ -8,7 +8,7 @@
 #include "weapon.h"
 #include "projectile.h"
 
-//static int thirdPersonMode = 0;
+static int thirdPersonMode = 0;
 void player_think(Entity *self);
 void player_update(Entity *self);
 //void player_free(Entity *self);
@@ -111,10 +111,10 @@ void player_think(Entity *self)
         }
     }
 
-     if (keys[SDL_SCANCODE_Z])self->position.z -= 1;
+    if (keys[SDL_SCANCODE_Z])self->position.z -= 1;
 
-     if (keys[SDL_SCANCODE_UP])self->rotation.x -= 0.0050;
-     if (keys[SDL_SCANCODE_DOWN])self->rotation.x += 0.0050;
+    if (keys[SDL_SCANCODE_UP])self->rotation.x -= 0.0050;
+    if (keys[SDL_SCANCODE_DOWN])self->rotation.x += 0.0050;
     //if (keys[SDL_SCANCODE_RIGHT])self->rotation.z -= 0.0050;
     //if (keys[SDL_SCANCODE_LEFT])self->rotation.z += 0.0050;
 
@@ -134,6 +134,30 @@ void player_think(Entity *self)
         equippedWep = weapon_new("models/1911.model", "1911");
     }
 
+    if (keys[SDL_SCANCODE_3])
+    {
+        entity_free(equippedWep);
+        equippedWep = weapon_new("models/mp5.model", "MP5");
+    }
+
+    if (keys[SDL_SCANCODE_4])
+    {
+        entity_free(equippedWep);
+        equippedWep = weapon_new("models/m700.model", "M700");
+    }
+
+    if (keys[SDL_SCANCODE_5])
+    {
+        entity_free(equippedWep);
+        equippedWep = weapon_new("models/870.model", "870");
+    }
+
+
+    if (keys[SDL_SCANCODE_Q])
+    {
+        entity_free(equippedWep);
+    }
+
 
 
     if(keys[SDL_SCANCODE_LCTRL])
@@ -145,6 +169,7 @@ void player_think(Entity *self)
 
         if(gfc_stricmp(equippedWep->entityName, "AK") == 0)
         {
+            weapon_fire(equippedWep, equippedWep->entityName);
             projectile_new("models/sphere.model", "AKbullet");
             SDL_Delay(100);
         }
@@ -153,14 +178,36 @@ void player_think(Entity *self)
             projectile_new("models/sphere.model", "1911bullet");
             SDL_Delay(100);
         }
+        else if(gfc_stricmp(equippedWep->entityName, "MP5") == 0)
+        {
+            projectile_new("models/sphere.model", "MP5bullet");
+            SDL_Delay(100);
+        }
+        else if(gfc_stricmp(equippedWep->entityName, "M700") == 0)
+        {
+            projectile_new("models/sphere.model", "M700bullet");
+            SDL_Delay(100);
+        }
+        else if(gfc_stricmp(equippedWep->entityName, "870") == 0)
+        {
+            projectile_new("models/sphere.model", "870bullet");
+            SDL_Delay(100);
+        }
     }
 
 
-//     if (keys[SDL_SCANCODE_F3])
-//     {
-//         thirdPersonMode = !thirdPersonMode;
-//         self->hidden = !self->hidden;
-//     }
+    if (keys[SDL_SCANCODE_F3])
+    {
+        if(thirdPersonMode == 0)
+        {
+            thirdPersonMode = 1;
+        }
+        else if(thirdPersonMode == 1)
+        {
+            thirdPersonMode = 0;
+        }
+        //self->hidden = !self->hidden;
+    }
 
 
         collisionPartner = entity_get_collision_partner(self);
@@ -223,23 +270,14 @@ void player_update(Entity *self)
     Vector3D rotation;
     float height;
     //Vector2D w;
-    Vector3D torso_position;
     Vector3D camera_position;
 
     if (!self)return;
 
     vector3d_copy(position,self->position);
     vector3d_copy(rotation,camera_rotation);
-    vector3d_copy(torso_position, position);
-    camera_position = torso_position;
+    vector3d_copy(camera_position, position);
 
-
-    if(camera_rotation.x >= 4.5){
-        camera_rotation.x = 4.5;
-    }
-    if(camera_rotation.x <= 1.2){
-        camera_rotation.x = 1.2;
-    }
 
     height = world_get_collision_height(self->position);
     if(self->position.z > height){
@@ -251,15 +289,31 @@ void player_update(Entity *self)
         self->position.z = height;
         if(self->velocity.z < 0)self->velocity.z = 0;
     }
-//     if (thirdPersonMode)
-//     {
-//         position.z += 100;
-//         rotation.x += M_PI*0.125;
-//         w = vector2d_from_angle(self->rotation.z);
-//         forward.x = w.x * 100;
-//         forward.y = w.y * 100;
-//         vector3d_add(position,position,-forward);
-//     }
+
+    // if (thirdPersonMode)
+    // {
+    //     position.z += 100;
+    //     rotation.x += M_PI*0.125;
+    //     w = vector2d_from_angle(self->rotation.z);
+    //     forward.x = w.x * 100;
+    //     forward.y = w.y * 100;
+    //     vector3d_add(position,position,-forward);
+    // }
+
+    if(thirdPersonMode == 1)
+    {
+        camera_position.x -= 25;
+        camera_position.z += 5;
+    }
+
+    self->rotation.y = GFC_PI;
+
+    if(camera_rotation.x >= 4.5){
+        camera_rotation.x = 4.5;
+    }
+    if(camera_rotation.x <= 1.2){
+        camera_rotation.x = 1.2;
+    }
 
      gf3d_camera_set_position(camera_position);
      gf3d_camera_set_rotation(rotation);

@@ -63,14 +63,17 @@ Entity *projectile_new(const char *modelToLoad, const char *name){
     else if(gfc_stricmp(name, "MP5bullet") == 0)
     {
         proj->proj_velocity = 0.4;
+        proj->proj_damage = 15;
     }
     else if(gfc_stricmp(name, "M700bullet") == 0)
     {
         proj->proj_velocity = 0.943;
+        proj->proj_damage = 50;
     }
     else if(gfc_stricmp(name, "870bullet") == 0)
     {
         proj->proj_velocity = 0.437;
+        proj->proj_damage = 35;
     }
     proj->w = vector2d_from_angle(player->rotation.z);
     //proj->ww = vector3d_from_angles(player->rotation.x, player->rotation.y, player->rotation.z);
@@ -106,6 +109,7 @@ void projectile_think(Entity *self){
             {
                 projCollisionPartner->health -= self->proj_damage;
                 entity_free(self);
+                slog("Enemy Health: %i", projCollisionPartner->health);
             }
         }
 }

@@ -181,6 +181,32 @@ World *world_load(char *filename)
     }
 
 
+    ejson = sj_object_get_value(json,"armoured");
+    entName = sj_get_string_value(sj_object_get_value(ejson,"entityName"));
+    slog("entName: %s", entName);
+
+    if(gfc_stricmp(entName, "armoured") == 0)
+    {
+        sj_value_as_vector3d(sj_object_get_value(ejson,"position"),&entPosition);
+        modelName = sj_get_string_value(sj_object_get_value(ejson,"model"));
+        entName = "armoured";
+        gfc_list_append(w->entityList,enemy_new(entPosition, modelName, entName));
+    }
+
+
+    ejson = sj_object_get_value(json,"sprinter");
+    entName = sj_get_string_value(sj_object_get_value(ejson,"entityName"));
+    slog("entName: %s", entName);
+
+    if(gfc_stricmp(entName, "sprinter") == 0)
+    {
+        sj_value_as_vector3d(sj_object_get_value(ejson,"position"),&entPosition);
+        modelName = sj_get_string_value(sj_object_get_value(ejson,"model"));
+        entName = "sprinter";
+        gfc_list_append(w->entityList,enemy_new(entPosition, modelName, entName));
+    }
+
+
 
 
     sj_free(json);

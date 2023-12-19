@@ -40,7 +40,20 @@ Entity *enemy_new(Vector3D position, const char *modelToLoad, const char *name){
     enemy->targetRadius.y = 50;
     enemy->targetRadius.z = 50;
     enemy->targetRadius.r = 50;
-    enemy->health = 100;
+
+
+    if(gfc_stricmp(name, "walker") == 0)
+    {
+        enemy->health = 100;
+    }
+    else if(gfc_stricmp(name, "armoued") == 0)
+    {
+        enemy->health = 200;
+    }
+    else if(gfc_stricmp(name, "sprinter") == 0)
+    {
+        enemy->health = 150;
+    }
     return enemy;
 }
 

@@ -2,6 +2,6 @@
     "model":
     {
         "model":"models/zombie/zombie.obj",
-        "texture":"models/zombie/world_people_colors.png"
+        "texture":"models/zombie/zombie.png"
     }
 }

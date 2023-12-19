@@ -63,5 +63,19 @@
         "model":"models/zombie.model",
         "position": [250,0,0],
         "entityName":"walker"
+    },
+
+    "armoured":
+    {
+        "model":"models/zombie2.model",
+        "position": [300,0,0],
+        "entityName":"armoured"
+    },
+
+    "sprinter":
+    {
+        "model":"models/zombie3.model",
+        "position": [350,0,0],
+        "entityName":"sprinter"
     }
 }

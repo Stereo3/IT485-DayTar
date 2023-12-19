@@ -19,18 +19,9 @@ void gf3d_camera_set_view_mat4(Matrix4 *view)
     memcpy(gf3d_camera.cameraMat,view,sizeof(Matrix4));
 }
 
-void gf3d_camera_look_at(
-    Vector3D position,
-    Vector3D target,
-    Vector3D up
-)
+void gf3d_camera_look_at(Vector3D position, Vector3D target, Vector3D up)
 {
-    gfc_matrix_view(
-        gf3d_camera.cameraMat,
-        position,
-        target,
-        up
-    );
+    gfc_matrix_view(gf3d_camera.cameraMat, position, target, up);
 }
 
 void gf3d_camera_update_view()

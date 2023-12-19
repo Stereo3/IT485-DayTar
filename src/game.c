@@ -41,15 +41,15 @@ int main(int argc,char *argv[])
     TextBlock playerStatuses;
     TextBlock gatheredResources;
     
-    Sprite *mouse = NULL;
+    //Sprite *mouse = NULL;
     int mousex,mousey;
     //Uint32 then;
     float mouseFrame = 0;
     World *w;
     Entity *agu;
     Entity *player;
-    Entity *weapon;
-    Entity *zombie;
+    //Entity *weapon;
+    //Entity *zombie;
     Mix_Music *ambiance;
     //Entity *gun;
     //Particle particle[100];
@@ -93,7 +93,7 @@ int main(int argc,char *argv[])
     gf3d_camera_set_scale(vector3d(1,1,1));
 
     player = gfc_list_get_nth(w->entityList, 0);
-    weapon = gfc_list_get_nth(w->entityList, 1);
+    //weapon = gfc_list_get_nth(w->entityList, 1);
     // woodLog = gfc_list_get_nth(w->entityList, 3);
     // cementBlock = gfc_list_get_nth(w->entityList, 4);
     // metalBarrel = gfc_list_get_nth(w->entityList, 5);
@@ -102,7 +102,7 @@ int main(int argc,char *argv[])
     // jerryCan->scale = vector3d(5,5,5);
     // waterWell = gfc_list_get_nth(w->entityList, 7);
     // waterWell->scale = vector3d(1,1,1);
-    zombie = gfc_list_get_nth(w->entityList, 8);
+    // /zombie = gfc_list_get_nth(w->entityList, 8);
 
     //slog("RAHHHHHHHHHHHHHHHHHHHHHHHHH: %s", woodLog->entityName);
 

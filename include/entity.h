@@ -47,7 +47,7 @@ typedef struct Entity_S
     Vector3D    scale;
     Vector3D    rotation;
     
-    Uint32      health;     /**<entity dies when it reaches zero*/
+    int      health;     /**<entity dies when it reaches zero*/
     // WHATEVER ELSE WE MIGHT NEED FOR ENTITIES
     struct Entity_S *target;    /**<entity to target for weapons / ai*/
     
@@ -58,6 +58,7 @@ typedef struct Entity_S
     Uint8   isEnemy;
     Uint8   isResource;
     Uint8   isProjectile;
+    Uint8   isFired;
 
     Vector2D w;
     //Vector3D ww;
@@ -77,6 +78,7 @@ typedef struct Entity_S
     Uint64 proj_ttl;
     Uint64 proj_spawntime;
     Uint32 proj_damage;
+    //Uint64 wep_firerate;
 }Entity;
 
 /**
