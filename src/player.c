@@ -78,6 +78,7 @@ void player_think(Entity *self)
     const Uint8 * keys;
     keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
     Uint64 theCurrentTime = SDL_GetTicks64();
+    //Entity *firedProj;
 
     mouse.x = mx;
     mouse.y = my;
@@ -173,6 +174,7 @@ void player_think(Entity *self)
 
         if(keys[SDL_SCANCODE_E] && self->equippedWep->isFired == 0)
         {
+            // Uint64 fireTime;
             if(!self->equippedWep)
             {
                 slog("No weapon equipped cannot shoot");
@@ -182,6 +184,14 @@ void player_think(Entity *self)
             {
                 weapon_fire(self->equippedWep, self->equippedWep->entityName);
                 projectile_new("models/sphere.model", "AKbullet");
+                // firedProj = entity_get_projectile();
+                // fireTime = firedProj->proj_spawntime;
+                // slog("theCurrentTime: %i|fireTime: %i", theCurrentTime, fireTime);
+                // if(theCurrentTime - fireTime >= 1000)
+                // {
+                //     slog("theCurrentTime: %i|fireTime: %i", theCurrentTime, fireTime);
+                //     self->equippedWep->secondHasPassed = 1;
+                // }
                 SDL_Delay(100);
             }
             else if(gfc_stricmp(self->equippedWep->entityName, "1911") == 0)
@@ -210,7 +220,7 @@ void player_think(Entity *self)
             }
 
         }
-        else if(self->equippedWep->isFired == 1)
+        else if(self->equippedWep->isFired == 1 && self->equippedWep->secondHasPassed == 1)
         {
             if(gfc_stricmp(self->equippedWep->entityName, "AK") == 0)
             {
@@ -282,16 +292,25 @@ void player_think(Entity *self)
                 }
                 else if(gfc_stricmp(collisionPartner->entityName, "metal") == 0)
                 {
+                    pickupsfx = gfc_sound_load("sfx/metal.wav",1,0);
+                    gfc_sound_play(pickupsfx,0,1,0,0);
+                    gfc_sound_free(pickupsfx);
                     self->metal++;
                     entity_free(collisionPartner);
                 }
                 else if(gfc_stricmp(collisionPartner->entityName, "fuel") == 0)
                 {
+                    pickupsfx = gfc_sound_load("sfx/fuel.wav",1,0);
+                    gfc_sound_play(pickupsfx,0,1,0,0);
+                    gfc_sound_free(pickupsfx);
                     self->fuel += 10;
                     entity_free(collisionPartner);
                 }
                 else if(gfc_stricmp(collisionPartner->entityName, "water") == 0)
                 {
+                    pickupsfx = gfc_sound_load("sfx/water.wav",1,0);
+                    gfc_sound_play(pickupsfx,0,1,0,0);
+                    gfc_sound_free(pickupsfx);
                     self->water += 25;
                     entity_free(collisionPartner);
                 }

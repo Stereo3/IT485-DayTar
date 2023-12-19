@@ -146,28 +146,32 @@ void weapon_fire_done(Entity *self, const char *name)
     {
         gf3d_model_free(self->model);
         self->model = gf3d_model_load("models/ak47.model");
-        //wep_model_play_anim(self, "models/ak47fireanim/ak47_fire.model");
         self->isFired = 0;
+        self->secondHasPassed = 0;
     }
     else if(gfc_stricmp(self->entityName, "1911") == 0)
     {
         self->model = gf3d_model_load("models/1911.model");
         self->isFired = 0;
+        self->secondHasPassed = 0;
     }
     else if(gfc_stricmp(self->entityName, "MP5") == 0)
     {
         self->model = gf3d_model_load("models/mp5.model");
         self->isFired = 0;
+        self->secondHasPassed = 0;
     }
     else if(gfc_stricmp(self->entityName, "M700") == 0)
     {
         self->model = gf3d_model_load("models/m700.model");
         self->isFired = 0;
+        self->secondHasPassed = 0;
     }
     else if(gfc_stricmp(self->entityName, "870") == 0)
     {
         self->model = gf3d_model_load("models/870.model");
         self->isFired = 0;
+        self->secondHasPassed = 0;
     }
 }
 

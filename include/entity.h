@@ -61,6 +61,7 @@ typedef struct Entity_S
     Uint8   isProjectile;
     Uint8   isFired;
     Uint8   isChasing;
+    Uint8   secondHasPassed;
 
     Vector2D w;
     //Vector3D ww;
@@ -140,6 +141,8 @@ Uint8 entity_collide_check(Entity *self, Entity *other);
 Entity *entity_get_collision_partner(Entity *self);
 
 Entity *entity_get_player(void);
+
+Entity *entity_get_projectile(void);
 
 
 #endif

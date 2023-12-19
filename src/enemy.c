@@ -4,11 +4,13 @@
 
 #include "enemy.h"
 #include "world.h"
+#include "gfc_audio.h"
 
 
 void enemy_think(Entity *self);
 void enemy_update(Entity *self);
 void enemy_free(Entity *self);
+Sound *enemysfx;
 
 Entity *enemy_new(Vector3D position, const char *modelToLoad, const char *name){
 
@@ -97,18 +99,27 @@ void enemy_think(Entity *self){
             gf3d_model_free(self->model);
             self->model = gf3d_model_load("models/zombie_aggro.model");
             self->isChasing = 1;
+            enemysfx = gfc_sound_load("sfx/zombieaggro.wav",1,0);
+            gfc_sound_play(enemysfx,0,1,0,0);
+            gfc_sound_free(enemysfx);
         }
         else if(gfc_stricmp(self->entityName, "armoured") == 0)
         {
             gf3d_model_free(self->model);
             self->model = gf3d_model_load("models/zombie2_aggro.model");
             self->isChasing = 1;
+            enemysfx = gfc_sound_load("sfx/zombie2aggro.wav",1,0);
+            gfc_sound_play(enemysfx,0,1,0,0);
+            gfc_sound_free(enemysfx);
         }
         else if(gfc_stricmp(self->entityName, "jess") == 0)
         {
             gf3d_model_free(self->model);
             self->model = gf3d_model_load("models/zombie3_aggro.model");
             self->isChasing = 1;
+            enemysfx = gfc_sound_load("sfx/zombie3aggro.wav",1,0);
+            gfc_sound_play(enemysfx,0,1,0,0);
+            gfc_sound_free(enemysfx);
         }
     }
     else if(vector3d_magnitude_between(player->position, self->position) > 50 && self->isChasing == 1)

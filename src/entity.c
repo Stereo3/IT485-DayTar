@@ -238,6 +238,21 @@ Entity *entity_get_player(void){
 
 }
 
+Entity *entity_get_projectile(void){
+    int i;
+    for (i = 0; i < entity_manager.entity_count; i++)
+    {
+        if (!entity_manager.entity_list[i]._inuse)continue;
+
+        if(entity_manager.entity_list[i].isProjectile == 1)
+        {
+            return &entity_manager.entity_list[i];
+        }
+    }
+    return NULL;
+
+}
+
 
 
 
