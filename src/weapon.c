@@ -2,10 +2,12 @@
 #include "gfc_types.h"
 
 #include "weapon.h"
+#include "gfc_audio.h"
 
 void weapon_think(Entity *self);
 void weapon_update(Entity *self);
 void weapon_free(Entity *self);
+Sound *weaponsfx;
 
 Entity *weapon_new(const char *modelToLoad, const char *name){
 
@@ -114,6 +116,9 @@ void weapon_fire(Entity *self, const char *name)
     {
         gf3d_model_free(self->model);
         self->model = gf3d_model_load("models/ak47_fire.model");
+        weaponsfx = gfc_sound_load("sfx/ak47.wav",.75,0);
+        gfc_sound_play(weaponsfx,0,1,0,0);
+        gfc_sound_free(weaponsfx);
         //wep_model_play_anim(self, "models/ak47fireanim/ak47_fire.model");
         self->isFired = 1;
     }
@@ -130,6 +135,9 @@ void weapon_fire(Entity *self, const char *name)
     else if(gfc_stricmp(self->entityName, "M700") == 0)
     {
         self->model = gf3d_model_load("models/m700_fire.model");
+        weaponsfx = gfc_sound_load("sfx/m700.wav",.75,0);
+        gfc_sound_play(weaponsfx,0,1,0,0);
+        gfc_sound_free(weaponsfx);
         self->isFired = 1;
     }
     else if(gfc_stricmp(self->entityName, "870") == 0)

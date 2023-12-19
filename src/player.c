@@ -292,7 +292,7 @@ void player_think(Entity *self)
                 }
                 else if(gfc_stricmp(collisionPartner->entityName, "metal") == 0)
                 {
-                    pickupsfx = gfc_sound_load("sfx/metal.wav",1,0);
+                    pickupsfx = gfc_sound_load("sfx/metal.wav",.75,0);
                     gfc_sound_play(pickupsfx,0,1,0,0);
                     gfc_sound_free(pickupsfx);
                     self->metal++;
@@ -300,7 +300,7 @@ void player_think(Entity *self)
                 }
                 else if(gfc_stricmp(collisionPartner->entityName, "fuel") == 0)
                 {
-                    pickupsfx = gfc_sound_load("sfx/fuel.wav",1,0);
+                    pickupsfx = gfc_sound_load("sfx/fuel.wav",.5,0);
                     gfc_sound_play(pickupsfx,0,1,0,0);
                     gfc_sound_free(pickupsfx);
                     self->fuel += 10;
